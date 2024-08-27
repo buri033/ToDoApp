@@ -20,15 +20,31 @@ class Todo:
             self.tags.append(tag)
 
     def __str__(self) -> str:
-        return f"{self.code_id}-{self.title}"
+        return f"{self.code_id} - {self.title}"
 
 
 class TodoBook:
     def __init__(self):
-        self.todos: dict = {}
+        self.todos: dict[int, Todo] = {}
 
     def add_todo(self, title: str, description: str) -> int:
-        id = len(self.todos) + 1
-        objecttodo = Todo(4, "Cien años de Recocha", "Camarón que se parcha, se lo lleva la recocha")
-        self.todos[4] = objecttodo
-        return id
+        todo_id: int = len(self.todos) + 1
+        objecttodo = Todo(todo_id, title, description)
+        self.todos[todo_id] = objecttodo
+        return todo_id
+
+    def pending_todos(self) -> list[Todo]:
+        return [todo for todo in self.todos.values() if not todo.completed]
+
+    def completed_todos(self) -> list[Todo]:
+        return [todo for todo in self.todos.values() if todo.completed]
+
+    def tags_todo_count(self) -> dict[str, int]:
+        tags_count: dict[str, int] = {}
+        for todo in self.todos.values():
+            for tag in todo.tags:
+                if tag in tags_count:
+                    tags_count[tag] += 1
+                else:
+                    tags_count[tag] = 1
+        return tags_count
